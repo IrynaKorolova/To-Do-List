@@ -1,4 +1,8 @@
-.completed{
+.completed {
   text-decoration: line-through;
   color: #ccc;
+}
+.title {
+  padding: 50px;
+  text-align: center;
 }
