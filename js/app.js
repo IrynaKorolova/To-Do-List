@@ -5,6 +5,7 @@ const totalEl = document.getElementById("total");
 
 //rendering todo list
 function renderTodos(todos, todoList) {
+  totalEl.textContent = todos.length;
   todoList.innerHTML = todos.map((todo) => createTodoHTML(todo)).join("");
 }
 
@@ -24,38 +25,40 @@ addFormEl.addEventListener("submit", (e) => {
   todos.push(newTodo);
   submitBtn.disabled = false;
   e.target.reset();
-  console.log(todos);
   renderTodos(todos, todoListEl);
 });
 
+// Mark task as completed
 const list = document.querySelector(".list-group");
-// Add a click event listener to the list and its children
 list.addEventListener("click", (event) => {
+  const itemKey = event.target.closest("li").dataset.id;
+  console.log(itemKey);
   if (event.target.getAttribute("type") === "checkbox") {
-    const itemKey = event.target.name;
     toggleDone(itemKey);
+  } else if (event.target.classList.contains("btn-close")) {
+    deleteTodo(itemKey);
   }
 });
 
 function toggleDone(name) {
-  // findIndex is an array method that returns the position of an element
-  // in the array.
+  // Locate the todo item in the todos array and set its checked property to the opposite
   const index = todos.findIndex((item) => item.id === Number(name));
-  console.log(index);
-  // Locate the todo item in the todos array and set its checked
-  // property to the opposite
   todos[index].completed = !todos[index].completed;
+  renderTodos(todos, todoListEl);
+}
+// remove the todo item from the array
+function deleteTodo(name) {
+  const index = todos.findIndex((item) => item.id === Number(name));
+  todos.splice(index, 1);
   renderTodos(todos, todoListEl);
 }
 
 //creating html
 function createTodoHTML(todo) {
-  return `<li class="list-group-item todo">
+  return `<li class="list-group-item todo" data-id = '${todo.id}'>
   <div class="row">
     <div class="col-1 todo-check">
-      <input type="checkbox" name="${todo.id}" ${
-    todo.completed ? "checked" : ""
-  }>
+      <input type="checkbox"  ${todo.completed ? "checked" : ""}>
     </div>
     <div class="col-10">
       <p class="m-0 ${todo.completed ? "completed" : ""}">${todo.body}</p>
